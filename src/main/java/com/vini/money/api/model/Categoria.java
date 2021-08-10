@@ -12,7 +12,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "categoria")
-@SequenceGenerator(name = "categoria_seq", sequenceName = "categoria_seq")
+@SequenceGenerator(name = "categoria_seq", sequenceName = "categoria_seq", initialValue = 1, allocationSize = 1)
 public class Categoria {
 	
 	@Id
