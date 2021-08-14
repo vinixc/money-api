@@ -6,6 +6,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +21,8 @@ public class Categoria {
 	@Getter
 	@GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "categoria_seq")
 	private Long id;
-	@Getter @Setter
+	@Getter @Setter 
+	@NotNull @Size(min = 3, max = 20)
 	private String nome;
 	
 	public Categoria() { }
