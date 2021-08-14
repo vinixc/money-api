@@ -41,7 +41,7 @@ public class CategoriaResource {
 			.path("/{id}").buildAndExpand(categoriaSalva.getId()).toUri();
 		response.setHeader("Location", uri.toASCIIString());
 		
-		return ResponseEntity.created(uri).body(categoria);
+		return ResponseEntity.created(uri).body(categoriaSalva);
 	}
 	
 	@GetMapping("/{id}")
