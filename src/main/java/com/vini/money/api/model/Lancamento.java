@@ -15,6 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.vini.money.api.enums.TipoLancamento;
 
@@ -33,8 +35,10 @@ public class Lancamento implements Serializable{
 	private Long id;
 	
 	@Getter @Setter
+	@NotNull @Size(min = 5,max = 50)
 	private String descricao;
 	
+	@NotNull
 	@Getter @Setter
 	@Column(name = "data_vencimento", columnDefinition = "DATE")
 	private LocalDate dataVencimento;
@@ -43,24 +47,25 @@ public class Lancamento implements Serializable{
 	@Column(name = "data_pagamento", columnDefinition = "DATE")
 	private LocalDate dataPagamento;
 	
-	@Getter @Setter
+	@Getter @Setter @NotNull
 	private BigDecimal valor;
 	
-	@Getter @Setter
+	@Getter @Setter @Size(max = 100)
 	private String observacao;
 	
+	@NotNull
 	@Getter @Setter
 	@Enumerated(EnumType.STRING)
 	private TipoLancamento tipo;
 	
 	@ManyToOne
-	@JoinColumn(name = "id_categoria")
 	@Getter @Setter
+	@JoinColumn(name = "id_categoria")
 	private Categoria categoria;
 	
 	@ManyToOne
-	@JoinColumn(name = "id_pessoa")
 	@Getter @Setter
+	@JoinColumn(name = "id_pessoa")
 	private Pessoa pessoa;
 	
 	public Lancamento() {}
