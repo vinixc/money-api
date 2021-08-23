@@ -23,7 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vini.money.api.event.RecursoCriadoEvent;
 import com.vini.money.api.excepcionhandler.MoneyExceptionHandler.Erro;
 import com.vini.money.api.model.Lancamento;
-import com.vini.money.api.repository.LacamentoRepository;
+import com.vini.money.api.repository.LancamentoRepository;
+import com.vini.money.api.repository.filter.LancamentoFilter;
 import com.vini.money.api.service.LancamentoService;
 import com.vini.money.api.service.exception.PessoaInexistenteOuInativaException;
 
@@ -32,7 +33,7 @@ import com.vini.money.api.service.exception.PessoaInexistenteOuInativaException;
 public class LancamentoResource {
 	
 	@Autowired
-	private LacamentoRepository lancamentoRepository;
+	private LancamentoRepository lancamentoRepository;
 	
 	@Autowired 
 	private LancamentoService lancamentoService;
@@ -44,8 +45,8 @@ public class LancamentoResource {
 	private MessageSource messageSource;
 	
 	@GetMapping
-	public ResponseEntity<List<Lancamento>> listar() {
-		List<Lancamento> lancamentos = lancamentoRepository.findAll();
+	public ResponseEntity<List<Lancamento>> pesquisar(LancamentoFilter lancamentoFilter) {
+		List<Lancamento> lancamentos = lancamentoRepository.filtrar(lancamentoFilter);
 		return lancamentos.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(lancamentos);
 	}
 	
