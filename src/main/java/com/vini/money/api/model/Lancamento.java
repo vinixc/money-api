@@ -61,11 +61,13 @@ public class Lancamento implements Serializable{
 	@ManyToOne
 	@Getter @Setter
 	@JoinColumn(name = "id_categoria")
+	@NotNull
 	private Categoria categoria;
 	
 	@ManyToOne
 	@Getter @Setter
 	@JoinColumn(name = "id_pessoa")
+	@NotNull
 	private Pessoa pessoa;
 	
 	public Lancamento() {}
