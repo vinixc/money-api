@@ -26,7 +26,7 @@ public class PessoaService {
 		pessoaRepository.save(pessoaSalva);
 	}
 	
-	private Pessoa buscarPessoaPeloId(Long id) {
+	public Pessoa buscarPessoaPeloId(Long id) {
 		Pessoa pessoaSalva = pessoaRepository.findOne(id);
 		
 		if(pessoaSalva == null) throw new EmptyResultDataAccessException(1);
