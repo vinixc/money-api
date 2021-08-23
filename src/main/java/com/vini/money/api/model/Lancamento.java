@@ -62,6 +62,20 @@ public class Lancamento implements Serializable{
 	@JoinColumn(name = "id_pessoa")
 	@Getter @Setter
 	private Pessoa pessoa;
+	
+	public Lancamento() {}
+
+	public Lancamento(String descricao, LocalDate dataVencimento, LocalDate dataPagamento, BigDecimal valor,
+			String observacao, TipoLancamento tipo, Categoria categoria, Pessoa pessoa) {
+		this.descricao = descricao;
+		this.dataVencimento = dataVencimento;
+		this.dataPagamento = dataPagamento;
+		this.valor = valor;
+		this.observacao = observacao;
+		this.tipo = tipo;
+		this.categoria = categoria;
+		this.pessoa = pessoa;
+	}
 
 	@Override
 	public int hashCode() {
@@ -94,5 +108,4 @@ public class Lancamento implements Serializable{
 				+ ", dataPagamento=" + dataPagamento + ", valor=" + valor + ", observacao=" + observacao + ", tipo="
 				+ tipo + ", categoria=" + categoria + ", pessoa=" + pessoa + "]";
 	}
-
 }
