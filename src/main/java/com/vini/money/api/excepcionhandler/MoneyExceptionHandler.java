@@ -55,6 +55,9 @@ public class MoneyExceptionHandler extends ResponseEntityExceptionHandler{
 		return handleExceptionInternal(ex, erros, headers, status, request);
 	}
 	
+	/**
+	 * Capturando exception de quando o usuario tenta deletar (acessar) um recurso que nao existe.
+	 */
 	@ExceptionHandler({EmptyResultDataAccessException.class})
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ResponseEntity<Object> handleEmptyResultDataAccessException(RuntimeException exception, WebRequest request) {
@@ -66,6 +69,9 @@ public class MoneyExceptionHandler extends ResponseEntityExceptionHandler{
 		return handleExceptionInternal(exception, erros, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
 	}
 	
+	/**
+	 * Capturando exception de quando o usuario tenta registrar um recurso com propriedades nao existente - exemplo com categoria inexistente.
+	 */
 	@ExceptionHandler({DataIntegrityViolationException.class})
 	public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex, WebRequest request){
 		
