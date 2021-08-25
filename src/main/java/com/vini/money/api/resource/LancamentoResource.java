@@ -29,6 +29,7 @@ import com.vini.money.api.excepcionhandler.MoneyExceptionHandler.Erro;
 import com.vini.money.api.model.Lancamento;
 import com.vini.money.api.repository.LancamentoRepository;
 import com.vini.money.api.repository.filter.LancamentoFilter;
+import com.vini.money.api.repository.projection.ResumoLancamento;
 import com.vini.money.api.service.LancamentoService;
 import com.vini.money.api.service.exception.PessoaInexistenteOuInativaException;
 
@@ -52,6 +53,13 @@ public class LancamentoResource {
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
 	public Page<Lancamento> pesquisar(LancamentoFilter lancamentoFilter, Pageable pageable) {
 		Page<Lancamento> lancamentos = lancamentoRepository.filtrar(lancamentoFilter,pageable);
+		return lancamentos;
+	}
+	
+	@GetMapping(params = "resumo")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
+	public Page<ResumoLancamento> resumir(LancamentoFilter lancamentoFilter, Pageable pageable) {
+		Page<ResumoLancamento> lancamentos = lancamentoRepository.resumir(lancamentoFilter,pageable);
 		return lancamentos;
 	}
 	
