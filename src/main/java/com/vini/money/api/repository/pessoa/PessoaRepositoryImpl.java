@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 import com.vini.money.api.model.Pessoa;
 import com.vini.money.api.model.Pessoa_;
 import com.vini.money.api.repository.filter.PessoaFilter;
+import com.vini.money.api.repository.projection.ResumoPessoa;
 
 public class PessoaRepositoryImpl implements PessoaRepositoryQuery{
 	
@@ -45,8 +46,36 @@ public class PessoaRepositoryImpl implements PessoaRepositoryQuery{
 		
 		return new PageImpl<>(query.getResultList(), pageable, total(pessoaFilter));
 	}
+	
+	@Override
+	public Page<ResumoPessoa> resumo(PessoaFilter pessoaFilter, Pageable pageable) {
+		//criando um builder de criteria
+		CriteriaBuilder builder = manager.getCriteriaBuilder();
+		//criando a criteria de pessoa
+		CriteriaQuery<ResumoPessoa> criteria = builder.createQuery(ResumoPessoa.class);
+		//indicando de onde vou pegar os dados
+		Root<Pessoa> root = criteria.from(Pessoa.class);
+		
+		criteria.select(
+				builder.construct(
+				ResumoPessoa.class,
+				root.get(Pessoa_.id),
+				root.get(Pessoa_.nome),
+				root.get(Pessoa_.ativo)
+				)
+		);
+		
+		//Adicionando restricoes
+		criteria.where(getRestricoes(pessoaFilter, builder, root));
+		
+		//monta query
+		TypedQuery<ResumoPessoa> query = manager.createQuery(criteria);
+		adicionarRestricoesDePaginacao(query, pageable);
+		
+		return new PageImpl<>(query.getResultList(),pageable, total(pessoaFilter));
+	}
 
-	private void adicionarRestricoesDePaginacao(TypedQuery<Pessoa> query, Pageable pageable) {
+	private void adicionarRestricoesDePaginacao(TypedQuery<?> query, Pageable pageable) {
 		int paginaAtual = pageable.getPageNumber();
 		int quantidadeRegistrosPorPagina = pageable.getPageSize();
 		int primeiroRegistroPagina = paginaAtual * quantidadeRegistrosPorPagina;

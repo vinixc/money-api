@@ -24,6 +24,7 @@ import com.vini.money.api.event.RecursoCriadoEvent;
 import com.vini.money.api.model.Pessoa;
 import com.vini.money.api.repository.PessoaRepository;
 import com.vini.money.api.repository.filter.PessoaFilter;
+import com.vini.money.api.repository.projection.ResumoPessoa;
 import com.vini.money.api.service.PessoaService;
 
 @RestController
@@ -43,6 +44,12 @@ public class PessoaResource {
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
 	public Page<Pessoa> listar(PessoaFilter pessoaFilter, Pageable pageable){
 		return pessoaRepository.filtrar(pessoaFilter,pageable);
+	}
+	
+	@GetMapping(params = "resumo")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
+	public Page<ResumoPessoa> resumo(PessoaFilter pessoaFilter, Pageable pageable){
+		return pessoaRepository.resumo(pessoaFilter,pageable);
 	}
 	
 	@GetMapping("/{id}")
