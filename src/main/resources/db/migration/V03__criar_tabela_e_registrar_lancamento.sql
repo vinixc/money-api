@@ -28,8 +28,6 @@ INSERT INTO lancamento (descricao,data_vencimento,data_pagamento,valor,observaca
 VALUES ('Salario Mensal', '2021/08/01', null, 1000.0,'Salario do mes', 'RECEITA',5,6);
 INSERT INTO lancamento (descricao,data_vencimento,data_pagamento,valor,observacao,tipo,id_categoria,id_pessoa)
 VALUES ('Salario Mensal', '2021/08/01', null, 8000.0,'Salario do mes', 'RECEITA',5,7);
-INSERT INTO lancamento (descricao,data_vencimento,data_pagamento,valor,observacao,tipo,id_categoria,id_pessoa)
-VALUES ('Salario Mensal', '2021/08/01', null, 15000.0,'Salario do mes', 'RECEITA',5,8);
 
 INSERT INTO lancamento (descricao,data_vencimento,data_pagamento,valor,observacao,tipo,id_categoria,id_pessoa)
 VALUES ('Gasolina', '2021/07/28', null, 100.0,'Gastos com Gasolina', 'DESPESA',5,1);
@@ -45,5 +43,3 @@ INSERT INTO lancamento (descricao,data_vencimento,data_pagamento,valor,observaca
 VALUES ('Gasolina', '2021/07/28', null, 100.0,'Gastos com Gasolina', 'DESPESA',5,6);
 INSERT INTO lancamento (descricao,data_vencimento,data_pagamento,valor,observacao,tipo,id_categoria,id_pessoa)
 VALUES ('Gasolina', '2021/07/28', null, 20.00,'Gastos com Gasolina', 'DESPESA',5,7);
-INSERT INTO lancamento (descricao,data_vencimento,data_pagamento,valor,observacao,tipo,id_categoria,id_pessoa)
-VALUES ('Gasolina', '2021/07/28', null, 30.0,'Gastos com Gasolina', 'DESPESA',5,8);
