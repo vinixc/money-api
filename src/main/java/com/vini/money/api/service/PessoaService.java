@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.vini.money.api.model.Pessoa;
 import com.vini.money.api.repository.PessoaRepository;
+import com.vini.money.api.service.exception.PessoaInexistenteOuInativaException;
 
 @Service
 public class PessoaService {
@@ -32,5 +33,10 @@ public class PessoaService {
 		if(pessoaSalva == null) throw new EmptyResultDataAccessException(1);
 		
 		return pessoaSalva;
+	}
+	
+	public void validarPessoaAtivaOrInexistente(Long pessoaId) {
+		Pessoa pessoa = pessoaRepository.findOne(pessoaId);
+		if(pessoa == null || !pessoa.getAtivo()) throw new PessoaInexistenteOuInativaException();
 	}
 }
