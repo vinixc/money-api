@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -39,6 +40,8 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 		Predicate[] predicates = criarRestricoes(lancamentoFilter, builder, root);
 		criteria.where(predicates);
 		
+		adicionaOrdenacao(pageable, builder, criteria, root);
+		
 		TypedQuery<Lancamento> query = manager.createQuery(criteria);
 		adicionarRestricoesDePaginacao(query,pageable);
 		
@@ -66,6 +69,8 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 		//criar restricoes
 		Predicate[] predicates = criarRestricoes(lancamentoFilter, builder, root);
 		criteria.where(predicates);
+		
+		adicionaOrdenacao(pageable, builder, criteria, root);
 		
 		TypedQuery<ResumoLancamento> query = manager.createQuery(criteria);
 		adicionarRestricoesDePaginacao(query,pageable);
@@ -95,6 +100,24 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 		}
 		
 		return predicates.toArray(new Predicate[predicates.size()]);
+	}
+	
+	private void adicionaOrdenacao(Pageable pageable, CriteriaBuilder builder, CriteriaQuery<?> criteria,
+			Root<Lancamento> root) {
+		//Adicionando order by de acordo com a propriedade sort
+		if(pageable.getSort() != null) {
+			List<Order> orders = new ArrayList<>();
+			pageable.getSort().forEach(order ->{
+				
+				if(order.isAscending()) {
+					orders.add(builder.asc(root.get(order.getProperty())));
+				}else {
+					orders.add(builder.desc(root.get(order.getProperty())));
+				}
+			});
+			
+			criteria.orderBy(orders);
+		}
 	}
 	
 	private void adicionarRestricoesDePaginacao(TypedQuery<?> query, Pageable pageable) {

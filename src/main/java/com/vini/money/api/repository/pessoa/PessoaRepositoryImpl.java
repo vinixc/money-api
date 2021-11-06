@@ -1,7 +1,9 @@
 package com.vini.money.api.repository.pessoa;
 
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -9,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -36,6 +39,9 @@ public class PessoaRepositoryImpl implements PessoaRepositoryQuery{
 		
 		//indicando de onde vou pegar os dados
 		Root<Pessoa> root = criteria.from(Pessoa.class);
+		
+		
+		adicionaOrdenacao(pageable, builder, criteria, root);
 		
 		//criando as restricoes, wherer
 		Predicate[] predicates = getRestricoes(pessoaFilter,builder,root);
@@ -65,6 +71,8 @@ public class PessoaRepositoryImpl implements PessoaRepositoryQuery{
 				)
 		);
 		
+		adicionaOrdenacao(pageable, builder, criteria, root);
+		
 		//Adicionando restricoes
 		criteria.where(getRestricoes(pessoaFilter, builder, root));
 		
@@ -73,6 +81,24 @@ public class PessoaRepositoryImpl implements PessoaRepositoryQuery{
 		adicionarRestricoesDePaginacao(query, pageable);
 		
 		return new PageImpl<>(query.getResultList(),pageable, total(pessoaFilter));
+	}
+
+	private void adicionaOrdenacao(Pageable pageable, CriteriaBuilder builder, CriteriaQuery<?> criteria,
+			Root<Pessoa> root) {
+		//Adicionando order by de acordo com a propriedade sort
+		if(pageable.getSort() != null) {
+			List<Order> orders = new ArrayList<>();
+			pageable.getSort().forEach(order ->{
+				
+				if(order.isAscending()) {
+					orders.add(builder.asc(root.get(order.getProperty())));
+				}else {
+					orders.add(builder.desc(root.get(order.getProperty())));
+				}
+			});
+			
+			criteria.orderBy(orders);
+		}
 	}
 
 	private void adicionarRestricoesDePaginacao(TypedQuery<?> query, Pageable pageable) {
@@ -119,7 +145,6 @@ public class PessoaRepositoryImpl implements PessoaRepositoryQuery{
 				)
 			);
 		}
-		
 		return restricoes.toArray(new Predicate[restricoes.size()]);
 	}
 }
