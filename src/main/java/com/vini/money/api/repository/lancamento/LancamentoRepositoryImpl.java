@@ -1,5 +1,6 @@
 package com.vini.money.api.repository.lancamento;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 
+import com.vini.money.api.dto.LancamentoEstatisticaCategoria;
 import com.vini.money.api.model.Categoria_;
 import com.vini.money.api.model.Lancamento;
 import com.vini.money.api.model.Lancamento_;
@@ -76,6 +78,45 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 		adicionarRestricoesDePaginacao(query,pageable);
 		
 		return new PageImpl<>(query.getResultList(), pageable, total(lancamentoFilter));
+	}
+	
+	@Override
+	public List<LancamentoEstatisticaCategoria> porCategoria(LocalDate mesReferente) {
+		//Criando criteria builder
+		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
+		
+		//Criando criteria query da class que sera construida com o resultado da pesquisa.
+		CriteriaQuery<LancamentoEstatisticaCategoria> criteriaQuery = criteriaBuilder.createQuery(LancamentoEstatisticaCategoria.class);
+		
+		//Criando o root de Lancamento, onde a consulta sera realizada.
+		Root<Lancamento> root = criteriaQuery.from(Lancamento.class);
+		
+		//Criando os campos que serao consultados e passando ao construtor do dto
+		criteriaQuery.select(criteriaBuilder.construct(LancamentoEstatisticaCategoria.class, 
+				root.get(Lancamento_.categoria),
+				criteriaBuilder.sum(root.get(Lancamento_.valor))
+		));
+		
+		//Primeiro dia do mes informado
+		LocalDate primeiroDia = mesReferente.withDayOfMonth(1);
+		
+		//Ultimo dia do mes informado
+		LocalDate ultimoDia = mesReferente.withDayOfMonth(mesReferente.lengthOfMonth());
+		
+		//Criando where, dataVencimento maior ou igual ao primeiro dia e data vencimento menor ou igual ao ultimo dia do mes
+		criteriaQuery.where(
+				criteriaBuilder.greaterThanOrEqualTo(root.get(Lancamento_.dataVencimento), primeiroDia),
+				criteriaBuilder.lessThanOrEqualTo(root.get(Lancamento_.dataVencimento), ultimoDia)
+		);
+		
+		//Agrupando por categoria
+		criteriaQuery.groupBy(root.get(Lancamento_.categoria));
+		
+		//Criando o typedQuery
+		TypedQuery<LancamentoEstatisticaCategoria> typedQuery = manager.createQuery(criteriaQuery);
+		
+		//Retornando consulta
+		return typedQuery.getResultList();
 	}
 
 	private Predicate[] criarRestricoes(LancamentoFilter lancamentoFilter, CriteriaBuilder builder,
@@ -141,5 +182,4 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 		criteria.select(builder.count(root));
 		return manager.createQuery(criteria).getSingleResult();
 	}
-	
 }
