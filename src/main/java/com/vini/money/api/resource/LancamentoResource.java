@@ -1,5 +1,8 @@
 package com.vini.money.api.resource;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vini.money.api.dto.LancamentoEstatisticaCategoria;
 import com.vini.money.api.event.RecursoCriadoEvent;
 import com.vini.money.api.model.Lancamento;
 import com.vini.money.api.repository.LancamentoRepository;
@@ -38,6 +42,12 @@ public class LancamentoResource {
 	
 	@Autowired
 	private ApplicationEventPublisher publisher;
+	
+	@GetMapping("/estatisticas/por-categoria")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
+	public List<LancamentoEstatisticaCategoria> porCategoria(){
+		return this.lancamentoRepository.porCategoria(LocalDate.now());
+	}
 	
 	@GetMapping
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
