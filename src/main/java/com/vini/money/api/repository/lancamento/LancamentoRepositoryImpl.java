@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 
 import com.vini.money.api.dto.LancamentoEstatisticaCategoria;
+import com.vini.money.api.dto.LancamentoEstatisticaDia;
 import com.vini.money.api.model.Categoria_;
 import com.vini.money.api.model.Lancamento;
 import com.vini.money.api.model.Lancamento_;
@@ -114,6 +115,46 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 		
 		//Criando o typedQuery
 		TypedQuery<LancamentoEstatisticaCategoria> typedQuery = manager.createQuery(criteriaQuery);
+		
+		//Retornando consulta
+		return typedQuery.getResultList();
+	}
+	
+	@Override
+	public List<LancamentoEstatisticaDia> porDia(LocalDate mesReferente) {
+		//Criando criteria builder
+		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
+		
+		//Criando criteria query da class que sera construida com o resultado da pesquisa.
+		CriteriaQuery<LancamentoEstatisticaDia> criteriaQuery = criteriaBuilder.createQuery(LancamentoEstatisticaDia.class);
+		
+		//Criando o root de Lancamento, onde a consulta sera realizada.
+		Root<Lancamento> root = criteriaQuery.from(Lancamento.class);
+		
+		//Criando os campos que serao consultados e passando ao construtor do dto
+		criteriaQuery.select(criteriaBuilder.construct(LancamentoEstatisticaDia.class, 
+				root.get(Lancamento_.tipo),
+				root.get(Lancamento_.dataVencimento),
+				criteriaBuilder.sum(root.get(Lancamento_.valor))
+		));
+		
+		//Primeiro dia do mes informado
+		LocalDate primeiroDia = mesReferente.withDayOfMonth(1);
+		
+		//Ultimo dia do mes informado
+		LocalDate ultimoDia = mesReferente.withDayOfMonth(mesReferente.lengthOfMonth());
+		
+		//Criando where, dataVencimento maior ou igual ao primeiro dia e data vencimento menor ou igual ao ultimo dia do mes
+		criteriaQuery.where(
+				criteriaBuilder.greaterThanOrEqualTo(root.get(Lancamento_.dataVencimento), primeiroDia),
+				criteriaBuilder.lessThanOrEqualTo(root.get(Lancamento_.dataVencimento), ultimoDia)
+		);
+		
+		//Agrupando por tipo e data vencimento
+		criteriaQuery.groupBy(root.get(Lancamento_.tipo),root.get(Lancamento_.dataVencimento));
+		
+		//Criando o typedQuery
+		TypedQuery<LancamentoEstatisticaDia> typedQuery = manager.createQuery(criteriaQuery);
 		
 		//Retornando consulta
 		return typedQuery.getResultList();
