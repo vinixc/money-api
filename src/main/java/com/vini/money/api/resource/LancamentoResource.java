@@ -10,7 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vini.money.api.dto.LancamentoEstatisticaCategoria;
@@ -30,6 +34,8 @@ import com.vini.money.api.repository.LancamentoRepository;
 import com.vini.money.api.repository.filter.LancamentoFilter;
 import com.vini.money.api.repository.projection.ResumoLancamento;
 import com.vini.money.api.service.LancamentoService;
+
+import net.sf.jasperreports.engine.JRException;
 
 @RestController
 @RequestMapping("/lancamentos")
@@ -43,6 +49,17 @@ public class LancamentoResource {
 	
 	@Autowired
 	private ApplicationEventPublisher publisher;
+	
+	@GetMapping("/relatorios/por-pessoa")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
+	public ResponseEntity<byte[]> relatorioPorPessoa(
+			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate inicio, 
+			@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate fim) throws JRException{
+		
+		byte[] relatorioPorPessoa = lancamentoService.relatorioPorPessoa(inicio, fim);
+		
+		return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_PDF_VALUE).body(relatorioPorPessoa);
+	}
 	
 	@GetMapping("/estatisticas/por-dia")
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
