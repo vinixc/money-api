@@ -11,6 +11,7 @@ import java.util.Map;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.vini.money.api.dto.LancamentoEstatisticaPessoa;
@@ -80,5 +81,12 @@ public class LancamentoService {
 		JasperPrint jasperPrint = JasperFillManager.fillReport(inputStream,parametros, new JRBeanCollectionDataSource(dados));
 		
 		return JasperExportManager.exportReportToPdf(jasperPrint);
+	}
+	
+	@Scheduled(cron = "0 0 6 * * *") // 0 0 0 0 0 0
+	public void avisarSobreLancamentosVencidos() {
+		
+		System.out.println("METODO SENDO EXECUTADO....");
+		
 	}
 }
