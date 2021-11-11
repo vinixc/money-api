@@ -18,6 +18,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vini.money.api.enums.TipoLancamento;
 
 import lombok.Getter;
@@ -69,6 +70,11 @@ public class Lancamento implements Serializable{
 	@JoinColumn(name = "id_pessoa")
 	@NotNull
 	private Pessoa pessoa;
+	
+	@JsonIgnore
+	public boolean isReceita() {
+		return TipoLancamento.RECEITA.equals(this.tipo);
+	}
 	
 	public Lancamento() {}
 
