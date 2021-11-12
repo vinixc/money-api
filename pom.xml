@@ -114,12 +114,6 @@
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
             <version>${jasperreports.version}</version>
-            <exclusions>
-            	<exclusion>
-            		<artifactId>com.lowagie</artifactId>
-            		<groupId>itext</groupId>
-            	</exclusion>
-            </exclusions>
         </dependency>
         
         <dependency>
@@ -133,12 +127,6 @@
             <artifactId>jasperreports-fonts</artifactId>
             <version>${jasperreports-fonts.version}</version>
         </dependency>
-        
-		<dependency>
-		    <groupId>com.lowagie</groupId>
-		    <artifactId>itext</artifactId>
-		    <version>2.1.7</version>
-		</dependency>
         
         <!-- E-MAIL -->
         <dependency>
@@ -170,6 +158,10 @@
 	</build>
 	
 	<repositories>
+		<repository>
+			<id>jaspersoft-third-party</id>
+			<url>https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/</url>
+		</repository>
 		<repository>
 			<id>jr-ce-releases</id>
             <url>http://jaspersoft.artifactoryonline.com/jaspersoft/jr-ce-releases</url>
