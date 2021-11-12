@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -34,6 +36,8 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 public class LancamentoService {
 	
 	private static final String DESTINATARIOS = "ROLE_PESQUISAR_LANCAMENTO";
+	
+	private static final Logger logger = LoggerFactory.getLogger(LancamentoService.class);
 	
 	@Autowired
 	private PessoaRepository pessoaRepository;
@@ -96,10 +100,28 @@ public class LancamentoService {
 	
 	@Scheduled(cron = "0 0 6 * * *") // 0 0 0 0 0 0
 	public void avisarSobreLancamentosVencidos() {
+		if(logger.isDebugEnabled()) {
+			logger.debug("Preparando envio de e-mails de aviso de lancamentos vencidos!");
+		}
 		
 		List<Lancamento> vencidos = this.lancamentoRepository.findByDataVencimentoLessThanEqualAndDataPagamentoIsNull(LocalDate.now());
+		
+		if(vencidos == null || vencidos.isEmpty()) {
+			logger.info("Sem lançamentos vencidos para aviso.");
+			return;
+		}
+		
+		logger.info("Existem {} lançamentos vencidos.", vencidos.size());
+		
 		List<Usuario> destinatarios = this.usuarioRepository.findByPermissoesDescricao(DESTINATARIOS);
 		
+		if(destinatarios == null || destinatarios.isEmpty()) {
+			logger.warn("Existem lancamentos vencidos, mas o sistema nao encontrou nenhum destinatario!");
+			return;
+		}
+		
 		this.mailer.avisarSobreLancamentosVencidos(vencidos, destinatarios);
+		
+		logger.info("Envio de e-mail de aviso concluído.");
 	}
 }
