@@ -14,8 +14,6 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import com.vini.money.api.repository.LancamentoRepository;
-
 
 @Component
 public class Mailer {
