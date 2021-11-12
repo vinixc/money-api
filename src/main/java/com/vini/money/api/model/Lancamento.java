@@ -19,6 +19,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vini.money.api.enums.TipoLancamento;
 
 import lombok.Getter;
@@ -69,6 +70,7 @@ public class Lancamento implements Serializable{
 	@Getter @Setter
 	@JoinColumn(name = "id_pessoa")
 	@NotNull
+	@JsonIgnoreProperties("contatos")
 	private Pessoa pessoa;
 	
 	@JsonIgnore
