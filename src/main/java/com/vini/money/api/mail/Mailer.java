@@ -1,8 +1,10 @@
 package com.vini.money.api.mail;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -14,6 +16,10 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import com.vini.money.api.config.property.MoneyApiProperty;
+import com.vini.money.api.model.Lancamento;
+import com.vini.money.api.model.Usuario;
+
 
 @Component
 public class Mailer {
@@ -23,6 +29,9 @@ public class Mailer {
 	
 	@Autowired
 	private TemplateEngine thymeleaf;
+	
+	@Autowired
+	private MoneyApiProperty property;
 	
 //	@EventListener
 //	public void teste(ApplicationReadyEvent event) {
@@ -38,6 +47,17 @@ public class Mailer {
 //		enviarEmail("email@gmail.com", Arrays.asList("email@gmail.com"), "Teste envio email", template, variaveis);
 //		System.out.println("Terminou envio de email");
 //	}
+	
+	public void avisarSobreLancamentosVencidos(List<Lancamento> vencidos, List<Usuario> destinatarios) {
+		String template = "mail/aviso-lancamentos-vencidos";		
+		
+		Map<String, Object> variaveis = new HashMap<>();
+		variaveis.put("lancamentos", vencidos);
+		
+		List<String> emails = destinatarios.stream().map(u -> u.getEmail()).collect(Collectors.toList());
+		
+		this.enviarEmail(property.getMail().getUsername(), emails, "Lancamentos Vencidos", template, variaveis);
+	}
 	
 	public void enviarEmail(String remetente, List<String> destinatarios, String assunto, String template, Map<String, Object> variaveis) {
 		

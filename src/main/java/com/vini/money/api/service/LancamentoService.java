@@ -15,10 +15,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.vini.money.api.dto.LancamentoEstatisticaPessoa;
+import com.vini.money.api.mail.Mailer;
 import com.vini.money.api.model.Lancamento;
 import com.vini.money.api.model.Pessoa;
+import com.vini.money.api.model.Usuario;
 import com.vini.money.api.repository.LancamentoRepository;
 import com.vini.money.api.repository.PessoaRepository;
+import com.vini.money.api.repository.UsuarioRepository;
 import com.vini.money.api.service.exception.PessoaInexistenteOuInativaException;
 
 import net.sf.jasperreports.engine.JRException;
@@ -30,6 +33,8 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 @Service
 public class LancamentoService {
 	
+	private static final String DESTINATARIOS = "ROLE_PESQUISAR_LANCAMENTO";
+	
 	@Autowired
 	private PessoaRepository pessoaRepository;
 	
@@ -38,6 +43,12 @@ public class LancamentoService {
 	
 	@Autowired
 	private PessoaService pessoaService;
+	
+	@Autowired
+	private UsuarioRepository usuarioRepository;
+	
+	@Autowired
+	private Mailer mailer;
 
 	public Lancamento salvar(Lancamento lancamento) {
 		Pessoa pessoa = pessoaRepository.findOne(lancamento.getPessoa().getId());
@@ -86,7 +97,9 @@ public class LancamentoService {
 	@Scheduled(cron = "0 0 6 * * *") // 0 0 0 0 0 0
 	public void avisarSobreLancamentosVencidos() {
 		
-		System.out.println("METODO SENDO EXECUTADO....");
+		List<Lancamento> vencidos = this.lancamentoRepository.findByDataVencimentoLessThanEqualAndDataPagamentoIsNull(LocalDate.now());
+		List<Usuario> destinatarios = this.usuarioRepository.findByPermissoesDescricao(DESTINATARIOS);
 		
+		this.mailer.avisarSobreLancamentosVencidos(vencidos, destinatarios);
 	}
 }
