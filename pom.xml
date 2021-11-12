@@ -128,6 +128,12 @@
             <version>${jasperreports-fonts.version}</version>
         </dependency>
         
+		<dependency>
+		    <groupId>com.lowagie</groupId>
+		    <artifactId>itext</artifactId>
+		    <version>4.2.0</version>
+		</dependency>
+        
         <!-- E-MAIL -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
