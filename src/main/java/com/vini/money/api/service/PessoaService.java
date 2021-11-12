@@ -18,10 +18,13 @@ public class PessoaService {
 	public Pessoa atualizar(Long id,Pessoa pessoa) {
 		Pessoa pessoaSalva = buscarPessoaPeloId(id);
 		
+		pessoaSalva.getContatos().clear();
+		pessoaSalva.getContatos().addAll(pessoa.getContatos());
+		
 		//setando pessoa para os contatos dela.
-		pessoa.getContatos().forEach(c -> c.setPessoa(pessoa));
+		pessoaSalva.getContatos().forEach(c -> c.setPessoa(pessoaSalva));
 				
-		BeanUtils.copyProperties(pessoa, pessoaSalva, "id");
+		BeanUtils.copyProperties(pessoa, pessoaSalva, "id","contatos");
 		return pessoaRepository.save(pessoaSalva);
 	}
 

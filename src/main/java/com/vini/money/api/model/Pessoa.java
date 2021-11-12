@@ -45,7 +45,7 @@ public class Pessoa implements Serializable{
 	private Endereco endereco;
 	
 	@Valid
-	@OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "pessoa", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Getter @Setter
 	@JsonIgnoreProperties("pessoa") //ignorando pessoa de contato no json
 	private List<Contato> contatos;
