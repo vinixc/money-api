@@ -17,6 +17,10 @@ public class PessoaService {
 	
 	public Pessoa atualizar(Long id,Pessoa pessoa) {
 		Pessoa pessoaSalva = buscarPessoaPeloId(id);
+		
+		//setando pessoa para os contatos dela.
+		pessoa.getContatos().forEach(c -> c.setPessoa(pessoa));
+				
 		BeanUtils.copyProperties(pessoa, pessoaSalva, "id");
 		return pessoaRepository.save(pessoaSalva);
 	}
@@ -38,5 +42,12 @@ public class PessoaService {
 	public void validarPessoaAtivaOrInexistente(Long pessoaId) {
 		Pessoa pessoa = pessoaRepository.findOne(pessoaId);
 		if(pessoa == null || !pessoa.getAtivo()) throw new PessoaInexistenteOuInativaException();
+	}
+
+	public Pessoa salvar(Pessoa pessoa) {
+		//setando pessoa para os contatos dela.
+		pessoa.getContatos().forEach(c -> c.setPessoa(pessoa));
+		
+		return pessoaRepository.save(pessoa);
 	}
 }

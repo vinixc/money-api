@@ -64,7 +64,7 @@ public class PessoaResource {
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') and #oauth2.hasScope('write')")
 	public ResponseEntity<Pessoa> criar(@Valid @RequestBody Pessoa pessoa, HttpServletResponse response){
 		
-		pessoaRepository.save(pessoa);
+		pessoaService.salvar(pessoa);
 		
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, pessoa.getId()));
 		
