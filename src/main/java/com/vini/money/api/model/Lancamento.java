@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -22,6 +23,7 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vini.money.api.enums.TipoLancamento;
+import com.vini.money.api.repository.listener.LancamentoAnexoListener;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +31,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "lancamento")
 @SequenceGenerator(name = "lancamento_seq", sequenceName = "lancamento_seq", initialValue = 1, allocationSize = 1)
+@EntityListeners(LancamentoAnexoListener.class)
 public class Lancamento implements Serializable{
 	private static final long serialVersionUID = 8164846250512875043L;
 	
