@@ -10,4 +10,4 @@ constraint fk_contato_pessoa_id foreign key (id_pessoa) references pessoa (id)
 );
 
 insert into contato (id_pessoa, nome, email, telefone) 
-values (12,'Vinicius de Carvalho', 'vinicius.tecbcc@gmail.com','11951861619');
+values (1,'Vinicius de Carvalho', 'vinicius.tecbcc@gmail.com','11951861619');
