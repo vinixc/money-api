@@ -49,7 +49,8 @@ public class PessoaService {
 
 	public Pessoa salvar(Pessoa pessoa) {
 		//setando pessoa para os contatos dela.
-		pessoa.getContatos().forEach(c -> c.setPessoa(pessoa));
+		if(pessoa.getContatos() != null)
+			pessoa.getContatos().forEach(c -> c.setPessoa(pessoa));
 		
 		return pessoaRepository.save(pessoa);
 	}
