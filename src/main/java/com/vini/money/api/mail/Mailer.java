@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
@@ -18,6 +19,7 @@ import org.thymeleaf.context.Context;
 
 import com.vini.money.api.config.property.MoneyApiProperty;
 import com.vini.money.api.model.Lancamento;
+import com.vini.money.api.model.Pessoa;
 import com.vini.money.api.model.Usuario;
 
 
@@ -47,6 +49,28 @@ public class Mailer {
 //		enviarEmail("email@gmail.com", Arrays.asList("email@gmail.com"), "Teste envio email", template, variaveis);
 //		System.out.println("Terminou envio de email");
 //	}
+	
+	public void avisarSobreLancamentosVencidos(List<Lancamento> vencidos) {
+		String template = "mail/aviso-lancamentos-vencidos";		
+		
+		Map<Pessoa, List<Lancamento>> vencidosPorPessoa = vencidos.stream().collect(Collectors.groupingBy(v -> v.getPessoa()));
+		
+		for(Entry<Pessoa, List<Lancamento>> entrySet : vencidosPorPessoa.entrySet()) {
+			Pessoa pessoa = entrySet.getKey();
+			
+			if(pessoa.getContatos() != null && !pessoa.getContatos().isEmpty()) {
+				
+				List<Lancamento> lancamentos = entrySet.getValue();
+				
+				Map<String, Object> variaveis = new HashMap<>();
+				variaveis.put("lancamentos", lancamentos);
+				
+				List<String> emails = pessoa.getContatos().stream().map(c -> c.getEmail()).collect(Collectors.toList());
+				
+				this.enviarEmail(property.getMail().getUsername(), emails, "Lancamentos Vencidos", template, variaveis);
+			}
+		}
+	}
 	
 	public void avisarSobreLancamentosVencidos(List<Lancamento> vencidos, List<Usuario> destinatarios) {
 		String template = "mail/aviso-lancamentos-vencidos";		
