@@ -109,7 +109,7 @@ public class LancamentoService {
 		return JasperExportManager.exportReportToPdf(jasperPrint);
 	}
 	
-	@Scheduled(fixedDelay = 60 * 30) // 0 0 0 0 0 0
+	@Scheduled(cron = "0 0 6 * * *") // 0 0 0 0 0 0
 	public void avisarSobreLancamentosVencidos() {
 		if(logger.isDebugEnabled()) {
 			logger.debug("Preparando envio de e-mails de aviso de lancamentos vencidos!");
