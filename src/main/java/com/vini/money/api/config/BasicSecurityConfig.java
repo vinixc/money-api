@@ -11,6 +11,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ * Configuracao basic para testes em ambiente de desenvolvimento,
+ * em producao o profile ativo é oauth-security
+ * @author Vinicius
+ *
+ */
+
 @Profile("basic-security")
 @EnableWebSecurity
 public class BasicSecurityConfig  extends WebSecurityConfigurerAdapter{
