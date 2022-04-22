@@ -67,7 +67,7 @@ public class Mailer {
 				
 				List<String> emails = pessoa.getContatos().stream().map(c -> c.getEmail()).collect(Collectors.toList());
 				
-				this.enviarEmail(property.getMail().getUsername(), emails, "Lancamentos Vencidos", template, variaveis);
+				this.enviarEmail(property.getMail().getFrom(), emails, "Lancamentos Vencidos", template, variaveis);
 			}
 		}
 	}

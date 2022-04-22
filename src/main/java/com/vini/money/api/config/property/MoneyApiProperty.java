@@ -76,6 +76,7 @@ public class MoneyApiProperty {
 		private Integer port;
 		private String username;
 		private String password;
+		private String from;
 		
 		public String getHost() {
 			return host;
@@ -100,6 +101,12 @@ public class MoneyApiProperty {
 		}
 		public void setPassword(String password) {
 			this.password = password;
+		}
+		public String getFrom() {
+			return from;
+		}
+		public void setFrom(String from) {
+			this.from = from;
 		}
 	}
 }
